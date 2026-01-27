@@ -20,5 +20,5 @@ func main() {
 }
 
 func handleRandom(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(strconv.Itoa(rand.IntN(7))))
+	w.Write([]byte(strconv.Itoa(rand.IntN(6) + 1)))
 }
