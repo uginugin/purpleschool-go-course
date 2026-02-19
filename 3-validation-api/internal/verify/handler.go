@@ -45,10 +45,12 @@ func (h *verifyHandler) send() http.HandlerFunc {
 		}
 
 		e := email.NewEmail()
-		e.From = "Jordan Wright <test@gmail.com>"
+		e.From = fmt.Sprintf("Jordan Wright <%s>", h.Config.Email)
 		e.To = []string{body.Email}
 		e.HTML = []byte(fmt.Sprintf("<a>http://localhost:8081/verify/%d</a>", hash))
-		e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "test@gmail.com", "password123", "smtp.gmail.com"))
+		e.Send(
+			fmt.Sprintf("%s:587", h.Config.Address),
+			smtp.PlainAuth("", h.Config.Email, h.Config.Password, h.Config.Address))
 
 		h.lastHash = hash
 		response.Json(w, 200, hash.String())
@@ -61,9 +63,7 @@ func (h *verifyHandler) verify() http.HandlerFunc {
 		hash := r.PathValue("hash")
 		isSame := hash == h.lastHash.String()
 
-		if !isSame {
-			h.lastHash = nil
-		}
+		h.lastHash = nil
 
 		response.Json(w, 200, isSame)
 	}
