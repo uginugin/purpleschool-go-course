@@ -34,23 +34,24 @@ func (h *verifyHandler) send() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := request.Handle[SendRequest](r)
 		if err != nil {
-			response.Json(w, 402, err)
+			response.Json(w, 402, err.Error())
 			return
 		}
 
 		hash, err := rand.Int(rand.Reader, big.NewInt(100))
 		if err != nil {
-			response.Json(w, 402, err)
+			response.Json(w, 402, err.Error())
 			return
 		}
 
 		e := email.NewEmail()
 		e.From = "Jordan Wright <test@gmail.com>"
-		e.To = []string{body.email}
+		e.To = []string{body.Email}
 		e.HTML = []byte(fmt.Sprintf("<a>http://localhost:8081/verify/%d</a>", hash))
 		e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "test@gmail.com", "password123", "smtp.gmail.com"))
 
 		h.lastHash = hash
+		response.Json(w, 200, hash.String())
 
 	}
 }

@@ -10,5 +10,5 @@ func Decode[T any](r *http.Request, payload *T) (*T, error) {
 	if err != nil {
 		return nil, err
 	}
-	return payload, err
+	return payload, nil
 }

@@ -1,5 +1,5 @@
 package verify
 
 type SendRequest struct {
-	email string `validate:"email"`
+	Email string `json:"email" validate:"required,email"`
 }
