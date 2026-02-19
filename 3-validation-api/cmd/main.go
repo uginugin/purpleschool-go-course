@@ -1,0 +1,26 @@
+package main
+
+import (
+	"3-validation-api/config"
+	"3-validation-api/internal/verify"
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	config := config.LoadConfig()
+
+	router := http.NewServeMux()
+
+	verify.NewVerifyHandler(router, &verify.VerifyHandlerDeps{
+		Config: config,
+	})
+
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
+	}
+
+	fmt.Println("Server is running")
+	server.ListenAndServe()
+}
