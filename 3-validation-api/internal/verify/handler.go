@@ -2,6 +2,7 @@ package verify
 
 import (
 	"3-validation-api/config"
+	jsonfile "3-validation-api/internal/verify/jsonFile"
 	"3-validation-api/pkg/request"
 	"3-validation-api/pkg/response"
 	"crypto/rand"
@@ -19,13 +20,19 @@ type VerifyHandlerDeps struct {
 
 type verifyHandler struct {
 	*config.Config
-	HashMail map[string]string
+	hashMailFile *jsonfile.JsonFile
 }
 
 func New(router *http.ServeMux, deps *VerifyHandlerDeps) {
-	handler := &verifyHandler{
-		Config:   deps.Config,
-		HashMail: make(map[string]string),
+	json, err := jsonfile.New()
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		return
+	}
+
+	handler := verifyHandler{
+		Config:       deps.Config,
+		hashMailFile: json,
 	}
 	router.HandleFunc("POST /send", handler.send())
 	router.Handle("GET /verify/{hash}", handler.verify())
@@ -58,7 +65,12 @@ func (h *verifyHandler) send() http.HandlerFunc {
 			return
 		}
 
-		h.HashMail[hash.String()] = body.Email
+		h.hashMailFile.Data[hash.String()] = body.Email
+		if err := h.hashMailFile.WriteData(); err != nil {
+			response.Json(w, 500, err.Error())
+			return
+		}
+
 		response.Json(w, 200, hash.String())
 
 	}
@@ -67,7 +79,11 @@ func (h *verifyHandler) send() http.HandlerFunc {
 func (h *verifyHandler) verify() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		hash := r.PathValue("hash")
-		response.Json(w, 200, h.HashMail[hash] != "")
-		delete(h.HashMail, hash)
+		response.Json(w, 200, h.hashMailFile.Data[hash] != "")
+		delete(h.hashMailFile.Data, hash)
+		if err := h.hashMailFile.WriteData(); err != nil {
+			response.Json(w, 500, err.Error())
+			return
+		}
 	}
 }
