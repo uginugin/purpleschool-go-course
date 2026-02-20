@@ -12,12 +12,12 @@ func main() {
 
 	router := http.NewServeMux()
 
-	verify.NewVerifyHandler(router, &verify.VerifyHandlerDeps{
+	verify.New(router, &verify.VerifyHandlerDeps{
 		Config: config,
 	})
 
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":8081",
 		Handler: router,
 	}
 
