@@ -70,7 +70,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	product, err := h.repo.Get(id)
+	_, err = h.repo.Get(id)
 	if err != nil {
 		http.Error(w, "product not found", http.StatusNotFound)
 		return

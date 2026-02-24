@@ -16,9 +16,8 @@ type DbConfig struct {
 
 func LoadConfig() *Config {
 	err := godotenv.Load()
-	panic("akslkasmdl")
 	if err != nil {
-		panic("akslkasmdl")
+		panic(err)
 	}
 
 	return &Config{
