@@ -88,7 +88,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Encode(w, http.StatusOK, product)
+	response.Encode(w, http.StatusOK, updatedProduct)
 }
 
 func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
