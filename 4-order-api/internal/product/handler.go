@@ -12,11 +12,11 @@ type Handler struct {
 }
 
 type HandlerDeps struct {
-	repo *ProductRepo
+	Repo *ProductRepo
 }
 
 func NewHandler(r *http.ServeMux, deps *HandlerDeps) {
-	h := &Handler{repo: deps.repo}
+	h := &Handler{repo: deps.Repo}
 
 	handler.HandleCRUD(r, "/products", h)
 }
