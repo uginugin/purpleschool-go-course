@@ -5,10 +5,10 @@ import (
 	"net/http"
 )
 
-func Decode[T any](r *http.Request, payload *T) (*T, error) {
+func Decode[T any](r *http.Request, payload *T) error {
 	err := json.NewDecoder(r.Body).Decode(payload)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return payload, nil
+	return nil
 }

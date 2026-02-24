@@ -2,18 +2,18 @@ package request
 
 import "net/http"
 
-func HandleBody[T any](r *http.Request, w *http.ResponseWriter) (*T, error) {
+func HandleBody[T any](r *http.Request) (*T, error) {
 	var payload T
 
-	body, err := Decode(r, &payload)
+	err := Decode(r, &payload)
 	if err != nil {
 		return nil, err
 	}
 
-	err = Validate(body)
+	err = Validate(&payload)
 	if err != nil {
 		return nil, err
 	}
 
-	return body, nil
+	return &payload, nil
 }
