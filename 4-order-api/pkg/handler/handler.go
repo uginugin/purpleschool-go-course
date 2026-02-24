@@ -15,9 +15,9 @@ type CRUDHandler interface {
 }
 
 func HandleCRUD(r *http.ServeMux, basePath string, h CRUDHandler) {
-	r.HandleFunc(fmt.Sprintf("%s/%s", basePath, request.QueryID), h.Get)
-	r.HandleFunc(fmt.Sprintf("%s/", basePath), h.GetAll)
-	r.HandleFunc(fmt.Sprintf("POST %s/", basePath), h.Create)
-	r.HandleFunc(fmt.Sprintf("PATCH %s/%s", basePath, request.QueryID), h.Update)
-	r.HandleFunc(fmt.Sprintf("DELETE %s/%s", basePath, request.QueryID), h.Delete)
+	r.HandleFunc(fmt.Sprintf("%s/{%s}", basePath, request.QueryID), h.Get)
+	r.HandleFunc(fmt.Sprintf("%s", basePath), h.GetAll)
+	r.HandleFunc(fmt.Sprintf("POST %s", basePath), h.Create)
+	r.HandleFunc(fmt.Sprintf("PATCH %s/{%s}", basePath, request.QueryID), h.Update)
+	r.HandleFunc(fmt.Sprintf("DELETE %s/{%s}", basePath, request.QueryID), h.Delete)
 }
